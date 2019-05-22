@@ -1,0 +1,30 @@
+server:
+  port: 7000
+spring:
+  application:
+    name: spring-zuul-gateway
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+zuul: 
+  routes: 
+    sale: 
+      #下面的含義就是，所有訪問/sale的請求都會被轉發。這裡是ribbon路由的形式
+      path: /sale/**
+      serviceId: spring-zuul-sale
+#下面的這兩行寫法，與上面的三行的寫法效果一樣，下面的寫法去掉了serviceId這個屬性
+#   spring-zuul-sale: 
+#     path: /sale/**
+    #下面兩個是簡單網關。響應的主體是網關本身。
+    #一個將請求都轉發到163網站的配置。localhost:7000/routeTest/163
+    routeTest: 
+      path: /routeTest/163
+      url: http://www.163.com
+    #路由器的名稱可以代替“path”屬性。即path屬性可省略。localhost:7000/route163
+    route163:
+      url: http://www.163.com
+    #下面的是轉發路由，響應的主體是服務提供的地址，而非網關本身。
+    testForward: 
+      path: /fo/**
+      url: forward:/source/hello
